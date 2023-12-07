@@ -1,2 +1,2 @@
 # TheArenaProject
-All the challenges solution of The arena project
+All the challenges solutions of The arena project
