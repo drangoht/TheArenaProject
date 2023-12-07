@@ -1,0 +1,39 @@
+import * as fs from 'fs';
+import * as path from 'path';
+const FILE_BUFFER_SIZE = 128000;
+// path.basename, fs.openSync, fs.writeSync, fs.readSync, fs.closeSync, Buffer.alloc, Buffer.copy, fs.statSync, Stats.isFile, Stats.isDirectory
+const cp = (sourcePath : string,destinationPath : string) :void => {
+    if((sourcePath === undefined ) || (destinationPath === undefined))
+        process.exit(1);
+    try
+    {
+        let fdSource : number = fs.openSync(sourcePath, 'r');
+
+        // si dossier on ajoute le nom du fichier source à la fin
+        try {
+            let statFile = fs.statSync(destinationPath,{throwIfNoEntry: undefined});
+            if((statFile != undefined) && (fs.statSync(destinationPath).isDirectory()))
+                destinationPath = destinationPath + "/" + path.basename(sourcePath);
+        }
+        catch(err) {
+        }
+        let fdDest : number = fs.openSync(destinationPath, 'w');
+        let buffer = Buffer.alloc(FILE_BUFFER_SIZE,'utf-8');
+        let bufferDest = Buffer.alloc(FILE_BUFFER_SIZE,'utf-8');
+        let bufferSize : number =FILE_BUFFER_SIZE;
+        while(bufferSize == FILE_BUFFER_SIZE)
+        {
+            bufferSize= fs.readSync(fdSource,buffer,0,FILE_BUFFER_SIZE,null);
+            bufferDest = Buffer.alloc(bufferSize,'utf-8');
+            buffer.copy(bufferDest,0,0,bufferSize);
+            fs.writeSync(fdDest, bufferDest);
+        }
+        fs.closeSync(fdSource);
+        fs.closeSync(fdDest);
+    }
+    catch(err) 
+    {
+        process.exit(1);
+    }
+}
+cp(process.argv[2],process.argv[3]);

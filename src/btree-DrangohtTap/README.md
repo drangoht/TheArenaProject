@@ -1,0 +1,3 @@
+# fight06-DrangohtTap
+
+Sans eux, pas de base de données, pas de stack, pas de machine learning...
